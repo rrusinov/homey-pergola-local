@@ -1,0 +1,5 @@
+{
+  "1.4.1": {
+    "en": "Flow cards for covers (set position, open, close, stop, and a position condition) and for lights (set brightness, set color). Fully local state tracking and improved reliability."
+  }
+}
