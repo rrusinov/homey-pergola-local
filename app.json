@@ -1,0 +1,29 @@
+{
+  "id": "one.zyx.homey-teleco-daisy",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": ["local"],
+  "name": {
+    "en": "Teleco Daisy (Local)",
+    "nl": "Teleco Daisy (Lokaal)"
+  },
+  "description": {
+    "en": "Control your Teleco Automation DaisyBox over the local network. Pairing uses your Daisy cloud account once to discover devices; all control is then fully offline over the box's local encrypted channel.",
+    "nl": "Bedien je Teleco Automation DaisyBox via het lokale netwerk. Koppelen gebruikt eenmalig je Daisy-cloudaccount om apparaten te vinden; daarna verloopt alle bediening volledig offline via het lokale versleutelde kanaal van de box."
+  },
+  "category": ["appliances"],
+  "permissions": [],
+  "brandColor": "#1f6f43",
+  "author": {
+    "name": "zyx",
+    "email": "ruslan.rusinov@live.de"
+  },
+  "source": "https://github.com/one-zyx/homey-teleco-daisy",
+  "support": "mailto:ruslan.rusinov@live.de",
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  }
+}

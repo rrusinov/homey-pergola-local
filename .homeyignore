@@ -1,0 +1,11 @@
+.git
+.gitignore
+.github
+.env
+.env.*
+node_modules
+*.log
+.DS_Store
+.homey
+README.md
+LICENSE

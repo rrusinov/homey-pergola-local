@@ -1,0 +1,16 @@
+{
+  "name": "one.zyx.homey-teleco-daisy",
+  "version": "1.0.0",
+  "description": "Local LAN control for Teleco Automation DaisyBox",
+  "main": "app.js",
+  "engines": {
+    "node": ">=16"
+  },
+  "scripts": {
+    "validate": "homey app validate"
+  },
+  "devDependencies": {
+    "@types/homey": "npm:homey-apps-sdk-v3-types@^0.3.0"
+  },
+  "license": "MIT"
+}
