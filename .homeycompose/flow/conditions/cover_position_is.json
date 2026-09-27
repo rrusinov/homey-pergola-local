@@ -1,0 +1,15 @@
+{
+  "title": { "en": "[[device]] position !{{is|isn't}} [[position]]", "nl": "[[device]] positie !{{is|is niet}} [[position]]" },
+  "titleFormatted": { "en": "[[device]] position !{{is|isn't}} [[position]]", "nl": "[[device]] positie !{{is|is niet}} [[position]]" },
+  "args": [
+    { "type": "autocomplete", "name": "device", "title": { "en": "Cover", "nl": "Zonwering" } },
+    { "type": "dropdown", "name": "position", "title": { "en": "Position", "nl": "Positie" },
+      "values": [
+        { "id": "0", "title": { "en": "Closed (0%)", "nl": "Gesloten (0%)" } },
+        { "id": "33", "title": { "en": "33%", "nl": "33%" } },
+        { "id": "66", "title": { "en": "66%", "nl": "66%" } },
+        { "id": "100", "title": { "en": "Open (100%)", "nl": "Open (100%)" } }
+      ]
+    }
+  ]
+}

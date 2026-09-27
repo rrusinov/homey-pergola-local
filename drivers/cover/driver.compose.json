@@ -1,0 +1,39 @@
+{
+  "name": {
+    "en": "Louver / Cover",
+    "nl": "Lamellen / Zonwering"
+  },
+  "class": "windowcoverings",
+  "platforms": [
+    "local"
+  ],
+  "connectivity": [
+    "lan"
+  ],
+  "capabilities": [
+    "windowcoverings_state",
+    "windowcoverings_set",
+    "daisy_position"
+  ],
+  "images": {
+    "small": "/drivers/cover/assets/images/small.png",
+    "large": "/drivers/cover/assets/images/large.png"
+  },
+  "pair": [
+    {
+      "id": "login",
+      "template": "login_credentials"
+    },
+    {
+      "id": "list_devices",
+      "template": "list_devices",
+      "navigation": {
+        "next": "add_devices"
+      }
+    },
+    {
+      "id": "add_devices",
+      "template": "add_devices"
+    }
+  ]
+}

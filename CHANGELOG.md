@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.4.1
+
+- Switch to the Homey **Compose** layout (`.homeycompose/`), which also fixes drivers,
+  capabilities and Flow cards not being merged by the CLI
+- Add Flow cards:
+  - Cover: *Set position*, *Open*, *Close*, *Stop*, and condition *Position is …*
+  - Light: *Set brightness*, *Set color*
+- Flow cards use an autocomplete device picker scoped to the app's devices
+  (Homey on this firmware drops cards that use a `driver_id` device filter)
+
 ## 1.3.0
 
 - Remove cloud status sync; state is tracked **purely locally** (cloud is only used
@@ -21,7 +31,7 @@
 - Add discrete **Position** picker for covers (Closed 0% / 33% / 66% / 100%)
 - Slider now snaps to the nearest supported hardware step
 - Add per-driver device icons (`drivers/*/assets/icon.svg`)
-- Move source to `github.com/rrusinov/homey-teleco-daisy`
+- Move source to `github.com/rrusinov/homey-pergola-local`
 
 ## 1.0.0
 

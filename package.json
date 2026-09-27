@@ -1,6 +1,6 @@
 {
   "name": "one.zyx.pergola-local",
-  "version": "1.3.0",
+  "version": "1.4.1",
   "description": "Local LAN control for pergola and shading controllers (Teleco Automation DaisyBox)",
   "main": "app.js",
   "engines": {

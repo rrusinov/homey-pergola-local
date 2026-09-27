@@ -158,6 +158,14 @@ class CoverDevice extends Homey.Device {
     else if (state === 'down') await this._syncPosition(0);
     else await this.setCapabilityValue('windowcoverings_state', 'idle').catch(this.error);
   }
+
+  async setPositionById(id) {
+    return this._onPosition(String(id));
+  }
+
+  async setState(state) {
+    return this._onState(state);
+  }
 }
 
 module.exports = CoverDevice;

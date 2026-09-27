@@ -1,0 +1,9 @@
+{
+  "title": { "en": "Set [[device]] color (hue [[hue]], saturation [[saturation]])", "nl": "Zet [[device]] kleur (tint [[hue]], verzadiging [[saturation]])" },
+  "titleFormatted": { "en": "Set [[device]] color (hue [[hue]], saturation [[saturation]])", "nl": "Zet [[device]] kleur (tint [[hue]], verzadiging [[saturation]])" },
+  "args": [
+    { "type": "autocomplete", "name": "device", "title": { "en": "Light", "nl": "Lamp" } },
+    { "type": "number", "name": "hue", "title": { "en": "Hue (0-1)", "nl": "Tint (0-1)" }, "min": 0, "max": 1, "step": 0.01 },
+    { "type": "number", "name": "saturation", "title": { "en": "Saturation (0-1)", "nl": "Verzadiging (0-1)" }, "min": 0, "max": 1, "step": 0.01 }
+  ]
+}

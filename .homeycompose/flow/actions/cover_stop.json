@@ -1,0 +1,5 @@
+{
+  "title": { "en": "Stop [[device]]", "nl": "Stop [[device]]" },
+  "titleFormatted": { "en": "Stop [[device]]", "nl": "Stop [[device]]" },
+  "args": [ { "type": "autocomplete", "name": "device", "title": { "en": "Cover", "nl": "Zonwering" } } ]
+}

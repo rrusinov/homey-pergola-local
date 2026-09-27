@@ -50,6 +50,16 @@ The hardware only accepts discrete steps. The **Position** picker offers
 `Closed (0%) / 33% / 66% / 100%`. The standard Homey slider is also available
 and snaps to the nearest supported step.
 
+## Flow cards
+
+- **Cover**: *Set position*, *Open*, *Close*, *Stop*, and the condition
+  *Position is …*.
+- **Light**: *Set brightness*, *Set color*.
+
+Because some Homey firmware versions drop Flow cards that reference a driver via
+a `driver_id` device filter, these cards use an autocomplete device picker scoped
+to this app's devices.
+
 ## Limitations
 
 - **No local state feedback.** The box's TCP :400 channel is write-only (it only

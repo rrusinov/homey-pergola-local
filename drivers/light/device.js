@@ -193,6 +193,18 @@ class LightDevice extends Homey.Device {
     }
     await this._persist();
   }
+
+  async setLevel(percent) {
+    if (!this.hasCapability('dim')) throw new Error('This device is not dimmable');
+    return this._onDim(Math.max(0, Math.min(1, percent / 100)));
+  }
+
+  async setColor({ hue, saturation }) {
+    if (!this._rgb) throw new Error('This device does not support color');
+    await this.setCapabilityValue('light_hue', hue).catch(this.error);
+    await this.setCapabilityValue('light_saturation', saturation).catch(this.error);
+    return this._sendColor();
+  }
 }
 
 module.exports = LightDevice;

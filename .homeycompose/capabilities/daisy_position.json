@@ -1,0 +1,28 @@
+{
+  "type": "enum",
+  "title": {
+    "en": "Position",
+    "nl": "Positie"
+  },
+  "getable": true,
+  "setable": true,
+  "uiComponent": "picker",
+  "values": [
+    {
+      "id": "0",
+      "title": { "en": "Closed (0%)", "nl": "Gesloten (0%)" }
+    },
+    {
+      "id": "33",
+      "title": { "en": "33%", "nl": "33%" }
+    },
+    {
+      "id": "66",
+      "title": { "en": "66%", "nl": "66%" }
+    },
+    {
+      "id": "100",
+      "title": { "en": "Open (100%)", "nl": "Open (100%)" }
+    }
+  ]
+}

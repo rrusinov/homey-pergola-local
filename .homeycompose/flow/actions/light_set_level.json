@@ -1,0 +1,15 @@
+{
+  "title": { "en": "Set [[device]] brightness to [[level]]%", "nl": "Zet [[device]] helderheid op [[level]]%" },
+  "titleFormatted": { "en": "Set [[device]] brightness to [[level]]%", "nl": "Zet [[device]] helderheid op [[level]]%" },
+  "args": [
+    { "type": "autocomplete", "name": "device", "title": { "en": "Light", "nl": "Lamp" } },
+    { "type": "dropdown", "name": "level", "title": { "en": "Brightness", "nl": "Helderheid" },
+      "values": [
+        { "id": "25", "title": { "en": "25%", "nl": "25%" } },
+        { "id": "50", "title": { "en": "50%", "nl": "50%" } },
+        { "id": "75", "title": { "en": "75%", "nl": "75%" } },
+        { "id": "100", "title": { "en": "100%", "nl": "100%" } }
+      ]
+    }
+  ]
+}
