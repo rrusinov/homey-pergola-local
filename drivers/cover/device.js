@@ -136,13 +136,23 @@ class CoverDevice extends Homey.Device {
   async _onPosition(id) {
     const value = parseInt(id, 10) / 100;
     const preset = coverPresetForValue(this._device, value);
-    await this._exec(preset && preset.command);
+    try {
+      await this._exec(preset && preset.command);
+    } catch (err) {
+      await this._resync();
+      throw err;
+    }
     if (preset) await this._syncPosition(preset.value);
   }
 
   async _onSet(value) {
     const preset = coverPresetForValue(this._device, value);
-    await this._exec(preset && preset.command);
+    try {
+      await this._exec(preset && preset.command);
+    } catch (err) {
+      await this._resync();
+      throw err;
+    }
     if (preset) await this._syncPosition(preset.value);
   }
 
@@ -152,11 +162,21 @@ class CoverDevice extends Homey.Device {
     else if (state === 'down') command = findCommand(this._device, 'OPEN_STOP_CLOSE', 'CLOSE');
     else command = findCommand(this._device, 'OPEN_STOP_CLOSE', 'STOP');
 
-    await this._exec(command);
+    try {
+      await this._exec(command);
+    } catch (err) {
+      await this._resync();
+      throw err;
+    }
 
     if (state === 'up') await this._syncPosition(1);
     else if (state === 'down') await this._syncPosition(0);
     else await this.setCapabilityValue('windowcoverings_state', 'idle').catch(this.error);
+  }
+
+  async _resync() {
+    const last = this.getStoreValue('position');
+    if (typeof last === 'number') await this._syncPosition(last);
   }
 
   async setPositionById(id) {

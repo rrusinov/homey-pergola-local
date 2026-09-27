@@ -158,7 +158,12 @@ class LightDevice extends Homey.Device {
 
   async _onOff(value) {
     const command = findCommand(this._device, 'POWER', value ? 'ON' : 'OFF');
-    await this._exec(command);
+    try {
+      await this._exec(command);
+    } catch (err) {
+      await this._restoreState();
+      throw err;
+    }
     await this.setCapabilityValue('onoff', value).catch(this.error);
     await this._persist();
   }
@@ -173,7 +178,12 @@ class LightDevice extends Homey.Device {
       return;
     }
     const command = lightCommandForValue(this._device, value);
-    await this._exec(command);
+    try {
+      await this._exec(command);
+    } catch (err) {
+      await this._restoreState();
+      throw err;
+    }
     await this.setCapabilityValue('dim', value).catch(this.error);
     if (!this.getCapabilityValue('onoff')) {
       await this.setCapabilityValue('onoff', true).catch(this.error);
@@ -187,7 +197,12 @@ class LightDevice extends Homey.Device {
     const saturation = this.getCapabilityValue('light_saturation') ?? 0;
     const rgb = hsvToRgb(hue, saturation, 1);
     const command = rgbCommand(this._device, brightness, rgb);
-    await this._exec(command);
+    try {
+      await this._exec(command);
+    } catch (err) {
+      await this._restoreState();
+      throw err;
+    }
     if (!this.getCapabilityValue('onoff')) {
       await this.setCapabilityValue('onoff', true).catch(this.error);
     }

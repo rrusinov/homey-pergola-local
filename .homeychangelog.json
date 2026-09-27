@@ -1,5 +1,8 @@
 {
+  "1.4.2": {
+    "en": "Fix the position picker and slider getting out of sync when a command fails; the app now reverts to the last known state on error."
+  },
   "1.4.1": {
-    "en": "Flow cards for covers (set position, open, close, stop, and a position condition) and for lights (set brightness, set color). Fully local state tracking and improved reliability."
+    "en": "Flow cards for covers (set position, open, close, stop, position condition) and lights (brightness, color). Fully local state tracking."
   }
 }
