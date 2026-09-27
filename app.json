@@ -1,0 +1,445 @@
+{
+  "_comment": "This file is generated. Please edit .homeycompose/app.json instead.",
+  "id": "one.zyx.pergola-local",
+  "version": "1.4.1",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local"
+  ],
+  "name": {
+    "en": "Pergola Local",
+    "nl": "Pergola Lokaal"
+  },
+  "description": {
+    "en": "Local network control for pergola and shading controllers. Works with Teleco Automation DaisyBox hardware (louvers, covers, lights, heaters). Pairing uses your Daisy account once to discover devices; all control is then fully offline over the box's local encrypted channel.",
+    "nl": "Lokale netwerkbesturing voor pergola- en zonweringsbediening. Werkt met Teleco Automation DaisyBox-hardware (lamellen, zonwering, lampen, verwarming). Koppelen gebruikt eenmalig je Daisy-account om apparaten te vinden; daarna verloopt alle bediening volledig offline via het lokale versleutelde kanaal van de box."
+  },
+  "category": [
+    "appliances"
+  ],
+  "permissions": [],
+  "brandColor": "#1f6f43",
+  "author": {
+    "name": "Ruslan Rusinov",
+    "email": "ruslan.rusinov@live.de"
+  },
+  "source": "https://github.com/rrusinov/homey-pergola-local",
+  "support": "mailto:ruslan.rusinov@live.de",
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "flow": {
+    "conditions": [
+      {
+        "title": {
+          "en": "[[device]] position !{{is|isn't}} [[position]]",
+          "nl": "[[device]] positie !{{is|is niet}} [[position]]"
+        },
+        "titleFormatted": {
+          "en": "[[device]] position !{{is|isn't}} [[position]]",
+          "nl": "[[device]] positie !{{is|is niet}} [[position]]"
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Cover",
+              "nl": "Zonwering"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "position",
+            "title": {
+              "en": "Position",
+              "nl": "Positie"
+            },
+            "values": [
+              {
+                "id": "0",
+                "title": {
+                  "en": "Closed (0%)",
+                  "nl": "Gesloten (0%)"
+                }
+              },
+              {
+                "id": "33",
+                "title": {
+                  "en": "33%",
+                  "nl": "33%"
+                }
+              },
+              {
+                "id": "66",
+                "title": {
+                  "en": "66%",
+                  "nl": "66%"
+                }
+              },
+              {
+                "id": "100",
+                "title": {
+                  "en": "Open (100%)",
+                  "nl": "Open (100%)"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "cover_position_is"
+      }
+    ],
+    "actions": [
+      {
+        "title": {
+          "en": "Close [[device]]",
+          "nl": "Sluit [[device]]"
+        },
+        "titleFormatted": {
+          "en": "Close [[device]]",
+          "nl": "Sluit [[device]]"
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Cover",
+              "nl": "Zonwering"
+            }
+          }
+        ],
+        "id": "cover_close"
+      },
+      {
+        "title": {
+          "en": "Open [[device]]",
+          "nl": "Open [[device]]"
+        },
+        "titleFormatted": {
+          "en": "Open [[device]]",
+          "nl": "Open [[device]]"
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Cover",
+              "nl": "Zonwering"
+            }
+          }
+        ],
+        "id": "cover_open"
+      },
+      {
+        "title": {
+          "en": "Set [[device]] position to [[position]]",
+          "nl": "Zet [[device]] positie op [[position]]"
+        },
+        "titleFormatted": {
+          "en": "Set [[device]] position to [[position]]",
+          "nl": "Zet [[device]] positie op [[position]]"
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Cover",
+              "nl": "Zonwering"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "position",
+            "title": {
+              "en": "Position",
+              "nl": "Positie"
+            },
+            "values": [
+              {
+                "id": "0",
+                "title": {
+                  "en": "Closed (0%)",
+                  "nl": "Gesloten (0%)"
+                }
+              },
+              {
+                "id": "33",
+                "title": {
+                  "en": "33%",
+                  "nl": "33%"
+                }
+              },
+              {
+                "id": "66",
+                "title": {
+                  "en": "66%",
+                  "nl": "66%"
+                }
+              },
+              {
+                "id": "100",
+                "title": {
+                  "en": "Open (100%)",
+                  "nl": "Open (100%)"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "cover_set_position"
+      },
+      {
+        "title": {
+          "en": "Stop [[device]]",
+          "nl": "Stop [[device]]"
+        },
+        "titleFormatted": {
+          "en": "Stop [[device]]",
+          "nl": "Stop [[device]]"
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Cover",
+              "nl": "Zonwering"
+            }
+          }
+        ],
+        "id": "cover_stop"
+      },
+      {
+        "title": {
+          "en": "Set [[device]] color (hue [[hue]], saturation [[saturation]])",
+          "nl": "Zet [[device]] kleur (tint [[hue]], verzadiging [[saturation]])"
+        },
+        "titleFormatted": {
+          "en": "Set [[device]] color (hue [[hue]], saturation [[saturation]])",
+          "nl": "Zet [[device]] kleur (tint [[hue]], verzadiging [[saturation]])"
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Light",
+              "nl": "Lamp"
+            }
+          },
+          {
+            "type": "number",
+            "name": "hue",
+            "title": {
+              "en": "Hue (0-1)",
+              "nl": "Tint (0-1)"
+            },
+            "min": 0,
+            "max": 1,
+            "step": 0.01
+          },
+          {
+            "type": "number",
+            "name": "saturation",
+            "title": {
+              "en": "Saturation (0-1)",
+              "nl": "Verzadiging (0-1)"
+            },
+            "min": 0,
+            "max": 1,
+            "step": 0.01
+          }
+        ],
+        "id": "light_set_color"
+      },
+      {
+        "title": {
+          "en": "Set [[device]] brightness to [[level]]%",
+          "nl": "Zet [[device]] helderheid op [[level]]%"
+        },
+        "titleFormatted": {
+          "en": "Set [[device]] brightness to [[level]]%",
+          "nl": "Zet [[device]] helderheid op [[level]]%"
+        },
+        "args": [
+          {
+            "type": "autocomplete",
+            "name": "device",
+            "title": {
+              "en": "Light",
+              "nl": "Lamp"
+            }
+          },
+          {
+            "type": "dropdown",
+            "name": "level",
+            "title": {
+              "en": "Brightness",
+              "nl": "Helderheid"
+            },
+            "values": [
+              {
+                "id": "25",
+                "title": {
+                  "en": "25%",
+                  "nl": "25%"
+                }
+              },
+              {
+                "id": "50",
+                "title": {
+                  "en": "50%",
+                  "nl": "50%"
+                }
+              },
+              {
+                "id": "75",
+                "title": {
+                  "en": "75%",
+                  "nl": "75%"
+                }
+              },
+              {
+                "id": "100",
+                "title": {
+                  "en": "100%",
+                  "nl": "100%"
+                }
+              }
+            ]
+          }
+        ],
+        "id": "light_set_level"
+      }
+    ]
+  },
+  "drivers": [
+    {
+      "name": {
+        "en": "Louver / Cover",
+        "nl": "Lamellen / Zonwering"
+      },
+      "class": "windowcoverings",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "capabilities": [
+        "windowcoverings_state",
+        "windowcoverings_set",
+        "daisy_position"
+      ],
+      "images": {
+        "small": "/drivers/cover/assets/images/small.png",
+        "large": "/drivers/cover/assets/images/large.png"
+      },
+      "pair": [
+        {
+          "id": "login",
+          "template": "login_credentials"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "cover"
+    },
+    {
+      "name": {
+        "en": "Light / Heater",
+        "nl": "Lamp / Verwarming"
+      },
+      "class": "light",
+      "platforms": [
+        "local"
+      ],
+      "connectivity": [
+        "lan"
+      ],
+      "capabilities": [
+        "onoff"
+      ],
+      "images": {
+        "small": "/drivers/light/assets/images/small.png",
+        "large": "/drivers/light/assets/images/large.png"
+      },
+      "pair": [
+        {
+          "id": "login",
+          "template": "login_credentials"
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "id": "light"
+    }
+  ],
+  "capabilities": {
+    "daisy_position": {
+      "type": "enum",
+      "title": {
+        "en": "Position",
+        "nl": "Positie"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "picker",
+      "values": [
+        {
+          "id": "0",
+          "title": {
+            "en": "Closed (0%)",
+            "nl": "Gesloten (0%)"
+          }
+        },
+        {
+          "id": "33",
+          "title": {
+            "en": "33%",
+            "nl": "33%"
+          }
+        },
+        {
+          "id": "66",
+          "title": {
+            "en": "66%",
+            "nl": "66%"
+          }
+        },
+        {
+          "id": "100",
+          "title": {
+            "en": "Open (100%)",
+            "nl": "Open (100%)"
+          }
+        }
+      ]
+    }
+  }
+}
