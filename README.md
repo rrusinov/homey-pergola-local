@@ -1,6 +1,8 @@
-# Teleco Daisy (Local) — Homey app
+# Pergola Local — Homey app
 
 Control your **Teleco Automation DaisyBox** from Homey over your **local network**, without the Teleco cloud.
+
+> **Unofficial.** This is an independent, community-developed project. It is not affiliated with, authorized, or endorsed by Teleco Automation S.r.l. or Somfy. "Teleco", "Daisy" and "DaisyBox" are trademarks of their respective owners and are used here only to describe compatibility. The app itself is named "Pergola Local".
 
 The DaisyBox speaks a local, unauthenticated protocol on the LAN:
 
@@ -8,8 +10,6 @@ The DaisyBox speaks a local, unauthenticated protocol on the LAN:
 2. Commands are sent to **TCP port 400**, XOR-obfuscated and Base64-encoded.
 
 This app uses that channel for all control, so commands are near-instant and keep working when the Teleco cloud is unavailable.
-
-> **Unofficial.** This is an independent, community-developed project. It is not affiliated with, authorized, or endorsed by Teleco Automation S.r.l. or Somfy. "Teleco", "Daisy" and "DaisyBox" are trademarks of their respective owners and are used here only to describe compatibility.
 
 ## How it works
 
@@ -28,18 +28,20 @@ This app uses that channel for all control, so commands are near-instant and kee
 npm install -g homey
 homey login
 homey select --id <your-homey-id>
-git clone https://github.com/rrusinov/homey-teleco-daisy.git
-cd homey-teleco-daisy
+git clone https://github.com/rrusinov/homey-pergola-local.git
+cd homey-pergola-local
 homey app install
 ```
 
-Then in the Homey app: **Devices → + → Add Device → Teleco Daisy (Local)**.
+Then in the Homey app: **Devices → + → Add Device → Pergola Local**.
 
 ## Supported devices
 
-Any Teleco Daisy device type exposed by the cloud configuration:
+Any device type exposed by the DaisyBox cloud configuration:
 
 - **Louver / Cover** — pergola slats, awnings, shades, curtains (`windowcoverings`).
+  Jog-based blades (e.g. type 22 model 31) are driven with a repeated-frame
+  burst so they run continuously instead of stepping ~6° at a time.
 - **Light / Heater** — on/off lights, dimmable 4-level lights, 4-channel heaters (`light`).
 
 ### Positions

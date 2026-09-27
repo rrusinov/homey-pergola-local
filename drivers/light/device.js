@@ -5,6 +5,10 @@ const { discoverBox, sendLocal } = require('../../lib/daisy-local');
 const { queueFor } = require('../../lib/queue');
 const { findCommand, buildCommand, lightCommandForValue } = require('../../lib/devices');
 
+const NETWORK_ERRORS = new Set([
+  'ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'EPIPE',
+]);
+
 class LightDevice extends Homey.Device {
   async onInit() {
     this._instCode = this.getStoreValue('instCode');
@@ -15,7 +19,7 @@ class LightDevice extends Homey.Device {
       (c) => (c.commandAction || '').toUpperCase() === 'LEVEL',
     );
     if (hasLevel && !this.hasCapability('dim')) {
-      await this.addCapability('dim');
+      await this.addCapability('dim').catch(this.error);
     }
 
     this.registerCapabilityListener('onoff', (value) => this._onOff(value));
@@ -36,14 +40,32 @@ class LightDevice extends Homey.Device {
     return this._boxIp;
   }
 
+  async _withBox(fn) {
+    let ip = await this._box();
+    if (!ip) throw new Error('DaisyBox not found on the local network');
+    try {
+      return await fn(ip);
+    } catch (err) {
+      if (!err || !NETWORK_ERRORS.has(err.code)) throw err;
+      this.log(`Box unreachable at ${ip} (${err.code}), rediscovering`);
+      this._boxIp = null;
+      await this.setStoreValue('boxIp', null).catch(this.error);
+      ip = await this._box();
+      if (!ip) throw err;
+      return fn(ip);
+    }
+  }
+
   async _exec(command) {
     if (!command) throw new Error('Action not available on this device');
-    const ip = await this._box();
-    if (!ip) throw new Error('DaisyBox not found on the local network');
     const payload = buildCommand(this._device, command);
-    const result = await queueFor(this._instCode).run(() => sendLocal(ip, this._instCode, payload));
-    if (result === 'deny') throw new Error('DaisyBox is busy, please retry');
-    return result;
+    return this._withBox(async (ip) => {
+      const result = await queueFor(this._instCode).run(
+        () => sendLocal(ip, this._instCode, payload),
+      );
+      if (result === 'deny') throw new Error('DaisyBox is busy, please retry');
+      return result;
+    });
   }
 
   async _onOff(value) {
@@ -52,10 +74,14 @@ class LightDevice extends Homey.Device {
   }
 
   async _onDim(value) {
+    if (value <= 0) {
+      await this._onOff(false);
+      return;
+    }
     const command = lightCommandForValue(this._device, value);
     await this._exec(command);
-    if (value > 0 && !this.getCapabilityValue('onoff')) {
-      await this.setCapabilityValue('onoff', true).catch(() => {});
+    if (!this.getCapabilityValue('onoff')) {
+      await this.setCapabilityValue('onoff', true).catch(this.error);
     }
   }
 }

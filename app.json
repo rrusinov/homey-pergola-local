@@ -1,16 +1,16 @@
 {
-  "id": "one.zyx.homey-teleco-daisy",
-  "version": "1.1.0",
+  "id": "one.zyx.pergola-local",
+  "version": "1.2.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": ["local"],
   "name": {
-    "en": "Teleco Daisy (Local)",
-    "nl": "Teleco Daisy (Lokaal)"
+    "en": "Pergola Local",
+    "nl": "Pergola Lokaal"
   },
   "description": {
-    "en": "Control your Teleco Automation DaisyBox over the local network. Pairing uses your Daisy cloud account once to discover devices; all control is then fully offline over the box's local encrypted channel.",
-    "nl": "Bedien je Teleco Automation DaisyBox via het lokale netwerk. Koppelen gebruikt eenmalig je Daisy-cloudaccount om apparaten te vinden; daarna verloopt alle bediening volledig offline via het lokale versleutelde kanaal van de box."
+    "en": "Local network control for pergola and shading controllers. Works with Teleco Automation DaisyBox hardware (louvers, covers, lights, heaters). Pairing uses your Daisy account once to discover devices; all control is then fully offline over the box's local encrypted channel.",
+    "nl": "Lokale netwerkbesturing voor pergola- en zonweringsbediening. Werkt met Teleco Automation DaisyBox-hardware (lamellen, zonwering, lampen, verwarming). Koppelen gebruikt eenmalig je Daisy-account om apparaten te vinden; daarna verloopt alle bediening volledig offline via het lokale versleutelde kanaal van de box."
   },
   "category": ["appliances"],
   "permissions": [],
@@ -19,7 +19,7 @@
     "name": "Ruslan Rusinov",
     "email": "ruslan.rusinov@live.de"
   },
-  "source": "https://github.com/rrusinov/homey-teleco-daisy",
+  "source": "https://github.com/rrusinov/homey-pergola-local",
   "support": "mailto:ruslan.rusinov@live.de",
   "images": {
     "small": "/assets/images/small.png",

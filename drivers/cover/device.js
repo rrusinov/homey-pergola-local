@@ -4,8 +4,17 @@ const Homey = require('homey');
 const { discoverBox, sendLocal } = require('../../lib/daisy-local');
 const { queueFor } = require('../../lib/queue');
 const {
-  findCommand, buildCommand, coverPresetForValue,
+  findCommand, buildCommand, coverPresetForValue, coverRunRepeat,
 } = require('../../lib/devices');
+
+const BURST_GAP_MS = 300;
+const NETWORK_ERRORS = new Set([
+  'ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'EPIPE',
+]);
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 function positionId(value) {
   return String(Math.round(value * 100));
@@ -38,14 +47,47 @@ class CoverDevice extends Homey.Device {
     return this._boxIp;
   }
 
+  async _withBox(fn) {
+    let ip = await this._box();
+    if (!ip) throw new Error('DaisyBox not found on the local network');
+    try {
+      return await fn(ip);
+    } catch (err) {
+      if (!err || !NETWORK_ERRORS.has(err.code)) throw err;
+      this.log(`Box unreachable at ${ip} (${err.code}), rediscovering`);
+      this._boxIp = null;
+      await this.setStoreValue('boxIp', null).catch(this.error);
+      ip = await this._box();
+      if (!ip) throw err;
+      return fn(ip);
+    }
+  }
+
   async _exec(command) {
     if (!command) throw new Error('Action not available on this device');
-    const ip = await this._box();
-    if (!ip) throw new Error('DaisyBox not found on the local network');
+
+    const action = (command.commandAction || '').toUpperCase();
+    const param = (command.commandParam || '').toUpperCase();
+    const repeats = (action === 'OPEN_STOP_CLOSE' && (param === 'OPEN' || param === 'CLOSE'))
+      ? coverRunRepeat(this._device) : 1;
     const payload = buildCommand(this._device, command);
-    const result = await queueFor(this._instCode).run(() => sendLocal(ip, this._instCode, payload));
-    if (result === 'deny') throw new Error('DaisyBox is busy, please retry');
-    return result;
+
+    return this._withBox(async (ip) => {
+      if (repeats <= 1) {
+        const result = await queueFor(this._instCode).run(
+          () => sendLocal(ip, this._instCode, payload),
+        );
+        if (result === 'deny') throw new Error('DaisyBox is busy, please retry');
+        return result;
+      }
+      await queueFor(this._instCode).run(async () => {
+        for (let i = 0; i < repeats; i += 1) {
+          if (i) await sleep(BURST_GAP_MS);
+          await sendLocal(ip, this._instCode, payload, 6000, false);
+        }
+      });
+      return 'burst';
+    });
   }
 
   async _syncPosition(value) {
