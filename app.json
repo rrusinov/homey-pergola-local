@@ -1,6 +1,6 @@
 {
   "id": "one.zyx.homey-teleco-daisy",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "compatibility": ">=5.0.0",
   "sdk": 3,
   "platforms": ["local"],
@@ -19,12 +19,42 @@
     "name": "zyx",
     "email": "ruslan.rusinov@live.de"
   },
-  "source": "https://github.com/one-zyx/homey-teleco-daisy",
+  "source": "https://github.com/rrusinov/homey-teleco-daisy",
   "support": "mailto:ruslan.rusinov@live.de",
   "images": {
     "small": "/assets/images/small.png",
     "large": "/assets/images/large.png",
     "xlarge": "/assets/images/xlarge.png"
+  },
+  "capabilities": {
+    "daisy_position": {
+      "type": "enum",
+      "title": {
+        "en": "Position",
+        "nl": "Positie"
+      },
+      "getable": true,
+      "setable": true,
+      "uiComponent": "picker",
+      "values": [
+        {
+          "id": "0",
+          "title": { "en": "Closed (0%)", "nl": "Gesloten (0%)" }
+        },
+        {
+          "id": "33",
+          "title": { "en": "33%", "nl": "33%" }
+        },
+        {
+          "id": "66",
+          "title": { "en": "66%", "nl": "66%" }
+        },
+        {
+          "id": "100",
+          "title": { "en": "Open (100%)", "nl": "Open (100%)" }
+        }
+      ]
+    }
   },
   "drivers": [
     {
@@ -38,7 +68,8 @@
       "connectivity": ["lan"],
       "capabilities": [
         "windowcoverings_state",
-        "windowcoverings_set"
+        "windowcoverings_set",
+        "daisy_position"
       ],
       "images": {
         "small": "/drivers/cover/assets/images/small.png",
