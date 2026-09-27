@@ -71,6 +71,21 @@
         "windowcoverings_set",
         "daisy_position"
       ],
+      "settings": [
+        {
+          "id": "sync_feedback",
+          "type": "checkbox",
+          "label": {
+            "en": "Sync status to the Daisy app after commands",
+            "nl": "Status na commando's naar de Daisy-app synchroniseren"
+          },
+          "hint": {
+            "en": "Sends a local GET_FEEDBACK so the Teleco cloud and the Daisy app show the new state. Control itself stays local; this only reports the state.",
+            "nl": "Stuurt een lokale GET_FEEDBACK zodat de Teleco-cloud en de Daisy-app de nieuwe status tonen. De bediening blijft lokaal; dit rapporteert alleen de status."
+          },
+          "value": false
+        }
+      ],
       "images": {
         "small": "/drivers/cover/assets/images/small.png",
         "large": "/drivers/cover/assets/images/large.png"
@@ -104,6 +119,21 @@
       "connectivity": ["lan"],
       "capabilities": [
         "onoff"
+      ],
+      "settings": [
+        {
+          "id": "sync_feedback",
+          "type": "checkbox",
+          "label": {
+            "en": "Sync status to the Daisy app after commands",
+            "nl": "Status na commando's naar de Daisy-app synchroniseren"
+          },
+          "hint": {
+            "en": "Sends a local GET_FEEDBACK so the Teleco cloud and the Daisy app show the new state. Control itself stays local; this only reports the state.",
+            "nl": "Stuurt een lokale GET_FEEDBACK zodat de Teleco-cloud en de Daisy-app de nieuwe status tonen. De bediening blijft lokaal; dit rapporteert alleen de status."
+          },
+          "value": false
+        }
       ],
       "images": {
         "small": "/drivers/light/assets/images/small.png",

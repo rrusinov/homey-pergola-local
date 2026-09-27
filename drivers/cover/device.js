@@ -1,7 +1,7 @@
 'use strict';
 
 const Homey = require('homey');
-const { discoverBox, sendLocal } = require('../../lib/daisy-local');
+const { discoverBox, sendLocal, refreshFeedback } = require('../../lib/daisy-local');
 const { queueFor } = require('../../lib/queue');
 const {
   findCommand, buildCommand, coverPresetForValue, coverRunRepeat,
@@ -98,16 +98,31 @@ class CoverDevice extends Homey.Device {
     await this.setCapabilityValue('windowcoverings_state', state).catch(this.error);
   }
 
+  async _refreshFeedback(command) {
+    if (!this.getSetting('sync_feedback')) return;
+    const param = ((command && command.commandParam) || '').toUpperCase();
+    if (param === 'OPEN' || param === 'STOP' || param === 'CLOSE') return;
+    try {
+      await this._withBox((ip) => refreshFeedback(ip, this._instCode, this._device));
+    } catch (err) {
+      this.log(`feedback sync failed: ${err.message}`);
+    }
+  }
+
   async _onPosition(id) {
     const value = parseInt(id, 10) / 100;
     const preset = coverPresetForValue(this._device, value);
-    await this._exec(preset && preset.command);
+    const command = preset && preset.command;
+    await this._exec(command);
+    await this._refreshFeedback(command);
     if (preset) await this._syncPosition(preset.value);
   }
 
   async _onSet(value) {
     const preset = coverPresetForValue(this._device, value);
-    await this._exec(preset && preset.command);
+    const command = preset && preset.command;
+    await this._exec(command);
+    await this._refreshFeedback(command);
     if (preset) await this._syncPosition(preset.value);
   }
 
@@ -118,6 +133,7 @@ class CoverDevice extends Homey.Device {
     else command = findCommand(this._device, 'OPEN_STOP_CLOSE', 'STOP');
 
     await this._exec(command);
+    await this._refreshFeedback(command);
 
     if (state === 'up') await this._syncPosition(1);
     else if (state === 'down') await this._syncPosition(0);
