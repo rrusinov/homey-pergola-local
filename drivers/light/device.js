@@ -220,6 +220,16 @@ class LightDevice extends Homey.Device {
     await this.setCapabilityValue('light_saturation', saturation).catch(this.error);
     return this._sendColor();
   }
+
+  async reapplyState() {
+    if (this._rgb && this.getCapabilityValue('onoff')) {
+      return this._sendColor();
+    }
+    if (this.getCapabilityValue('onoff')) {
+      return this._onDim(this.getCapabilityValue('dim') ?? 1);
+    }
+    return this._onOff(false);
+  }
 }
 
 module.exports = LightDevice;

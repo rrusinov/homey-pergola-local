@@ -36,12 +36,14 @@ class PergolaLocalApp extends Homey.App {
     bind('cover_open', 'cover', coverAutocomplete, (d) => d.setState('up'));
     bind('cover_close', 'cover', coverAutocomplete, (d) => d.setState('down'));
     bind('cover_stop', 'cover', coverAutocomplete, (d) => d.setState('idle'));
+    bind('cover_reapply', 'cover', coverAutocomplete, (d) => d.reapplyPosition());
 
     bind('light_set_level', 'light', lightAutocomplete, (d, a) => d.setLevel(Number(a.level)));
     bind('light_set_color', 'light', lightAutocomplete, (d, a) => d.setColor({
       hue: Number(a.hue),
       saturation: Number(a.saturation),
     }));
+    bind('light_reapply', 'light', lightAutocomplete, (d) => d.reapplyState());
 
     const positionIs = this.homey.flow.getConditionCard('cover_position_is');
     positionIs.registerArgumentAutocompleteListener('device', coverAutocomplete);

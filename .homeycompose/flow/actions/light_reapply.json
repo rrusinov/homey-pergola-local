@@ -1,0 +1,6 @@
+{
+  "title": { "en": "Re-apply [[device]] state", "nl": "Status van [[device]] opnieuw toepassen" },
+  "titleFormatted": { "en": "Re-apply [[device]] state", "nl": "Status van [[device]] opnieuw toepassen" },
+  "hint": { "en": "Re-sends the device's last known on/off and brightness (or color)." },
+  "args": [ { "type": "autocomplete", "name": "device", "title": { "en": "Light", "nl": "Lamp" } } ]
+}

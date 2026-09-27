@@ -186,6 +186,16 @@ class CoverDevice extends Homey.Device {
   async setState(state) {
     return this._onState(state);
   }
+
+  async reapplyPosition() {
+    let id = this.getCapabilityValue('daisy_position');
+    if (id === null || id === undefined) {
+      const stored = this.getStoreValue('position');
+      if (typeof stored === 'number') id = String(Math.round(stored * 100));
+    }
+    if (id === null || id === undefined) throw new Error('Position is unknown; set a position first');
+    return this._onPosition(String(id));
+  }
 }
 
 module.exports = CoverDevice;

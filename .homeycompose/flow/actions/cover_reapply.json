@@ -1,0 +1,6 @@
+{
+  "title": { "en": "Re-apply [[device]] position", "nl": "Positie van [[device]] opnieuw toepassen" },
+  "titleFormatted": { "en": "Re-apply [[device]] position", "nl": "Positie van [[device]] opnieuw toepassen" },
+  "hint": { "en": "Re-sends the device's last known position. Useful when the device was moved with a remote, so Homey and the hardware get back in sync." },
+  "args": [ { "type": "autocomplete", "name": "device", "title": { "en": "Cover", "nl": "Zonwering" } } ]
+}
