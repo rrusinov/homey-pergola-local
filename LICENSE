@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 zyx
+Copyright (c) 2026 Ruslan Rusinov
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -20,5 +20,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Portions of the protocol implementation are derived from the MIT-licensed
-projects by Andreas Nüßlein and croll83 (see README credits).
+---
+
+This project is an independent, unofficial integration. It contains protocol
+knowledge and code derived from the following MIT-licensed projects. Their
+notices are reproduced in THIRD_PARTY_NOTICES.md:
+
+- py-teleco-daisy        Copyright (c) 2024 Andreas Nüßlein
+- hass_teleco_daisy      Copyright (c) 2024 Andreas Nüßlein
+- ha-teleco-daisy        Copyright (c) 2024 Andreas Nüßlein (original),
+                         Copyright (c) 2026 croll83 (local LAN channel)
