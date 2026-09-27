@@ -1,12 +1,15 @@
 'use strict';
 
 const Homey = require('homey');
-const { discoverBox, sendLocal, refreshFeedback } = require('../../lib/daisy-local');
+const { discoverBox, sendLocal } = require('../../lib/daisy-local');
 const { queueFor } = require('../../lib/queue');
 const {
   findCommand, buildCommand, lightCommandForValue, isRgbLight, rgbCommand,
 } = require('../../lib/devices');
 
+const DISCOVER_MS = 4000;
+const WARM_MS = 12000;
+const WARM_RETRY_MS = 15000;
 const NETWORK_ERRORS = new Set([
   'ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'EPIPE',
 ]);
@@ -61,15 +64,66 @@ class LightDevice extends Homey.Device {
       this.registerCapabilityListener('light_saturation', () => this._sendColor());
     }
 
-    this.log(`Light "${this.getName()}" ready (rgb=${this._rgb}, box ${this._boxIp || 'not yet discovered'})`);
+    await this._restoreState();
+
+    if (!this._boxIp) this._warmBox();
+
+    this.log(`Light "${this.getName()}" ready (rgb=${this._rgb}, box ${this._boxIp || 'warming up'})`);
+  }
+
+  async onDeleted() {
+    if (this._warmTimer) clearTimeout(this._warmTimer);
+  }
+
+  async _restoreState() {
+    const store = this.getStore();
+    for (const cap of ['onoff', 'dim', 'light_hue', 'light_saturation']) {
+      const saved = store[cap];
+      if (saved !== undefined && saved !== null && this.hasCapability(cap)) {
+        await this.setCapabilityValue(cap, saved).catch(this.error);
+      }
+    }
+  }
+
+  async _persist() {
+    for (const cap of ['onoff', 'dim', 'light_hue', 'light_saturation']) {
+      if (this.hasCapability(cap)) {
+        const value = this.getCapabilityValue(cap);
+        if (value !== null && value !== undefined) {
+          await this.setStoreValue(cap, value).catch(this.error);
+        }
+      }
+    }
+  }
+
+  async _warmBox() {
+    if (this._boxIp || this._warming) return;
+    this._warming = true;
+    try {
+      const found = await discoverBox(this._instCode, WARM_MS);
+      if (found) {
+        this._boxIp = found.ip;
+        await this.setStoreValue('boxIp', found.ip).catch(this.error);
+      }
+    } catch (err) {
+      this.log(`box discovery failed: ${err.message}`);
+    }
+    this._warming = false;
+    if (!this._boxIp) {
+      this._warmTimer = setTimeout(() => {
+        this._warmTimer = null;
+        this._warmBox();
+      }, WARM_RETRY_MS);
+      if (this._warmTimer.unref) this._warmTimer.unref();
+    }
   }
 
   async _box() {
     if (this._boxIp) return this._boxIp;
-    const found = await discoverBox(this._instCode);
+    const found = await discoverBox(this._instCode, DISCOVER_MS);
     if (found) {
       this._boxIp = found.ip;
-      await this.setStoreValue('boxIp', found.ip);
+      await this.setStoreValue('boxIp', found.ip).catch(this.error);
     }
     return this._boxIp;
   }
@@ -102,19 +156,11 @@ class LightDevice extends Homey.Device {
     });
   }
 
-  async _refreshFeedback(command) {
-    if (!this.getSetting('sync_feedback')) return;
-    try {
-      await this._withBox((ip) => refreshFeedback(ip, this._instCode, this._device));
-    } catch (err) {
-      this.log(`feedback sync failed: ${err.message}`);
-    }
-  }
-
   async _onOff(value) {
     const command = findCommand(this._device, 'POWER', value ? 'ON' : 'OFF');
     await this._exec(command);
-    await this._refreshFeedback(command);
+    await this.setCapabilityValue('onoff', value).catch(this.error);
+    await this._persist();
   }
 
   async _onDim(value) {
@@ -128,10 +174,11 @@ class LightDevice extends Homey.Device {
     }
     const command = lightCommandForValue(this._device, value);
     await this._exec(command);
-    await this._refreshFeedback(command);
+    await this.setCapabilityValue('dim', value).catch(this.error);
     if (!this.getCapabilityValue('onoff')) {
       await this.setCapabilityValue('onoff', true).catch(this.error);
     }
+    await this._persist();
   }
 
   async _sendColor() {
@@ -141,10 +188,10 @@ class LightDevice extends Homey.Device {
     const rgb = hsvToRgb(hue, saturation, 1);
     const command = rgbCommand(this._device, brightness, rgb);
     await this._exec(command);
-    await this._refreshFeedback(command);
     if (!this.getCapabilityValue('onoff')) {
       await this.setCapabilityValue('onoff', true).catch(this.error);
     }
+    await this._persist();
   }
 }
 

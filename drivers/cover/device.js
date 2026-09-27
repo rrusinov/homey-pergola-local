@@ -1,13 +1,16 @@
 'use strict';
 
 const Homey = require('homey');
-const { discoverBox, sendLocal, refreshFeedback } = require('../../lib/daisy-local');
+const { discoverBox, sendLocal } = require('../../lib/daisy-local');
 const { queueFor } = require('../../lib/queue');
 const {
   findCommand, buildCommand, coverPresetForValue, coverRunRepeat,
 } = require('../../lib/devices');
 
 const BURST_GAP_MS = 300;
+const DISCOVER_MS = 4000;
+const WARM_MS = 12000;
+const WARM_RETRY_MS = 15000;
 const NETWORK_ERRORS = new Set([
   'ECONNREFUSED', 'ECONNRESET', 'ETIMEDOUT', 'EHOSTUNREACH', 'ENETUNREACH', 'EPIPE',
 ]);
@@ -34,15 +37,46 @@ class CoverDevice extends Homey.Device {
     this.registerCapabilityListener('windowcoverings_set', (value) => this._onSet(value));
     this.registerCapabilityListener('daisy_position', (value) => this._onPosition(value));
 
-    this.log(`Cover "${this.getName()}" ready (box ${this._boxIp || 'not yet discovered'})`);
+    const saved = this.getStoreValue('position');
+    if (typeof saved === 'number') await this._syncPosition(saved).catch(this.error);
+
+    if (!this._boxIp) this._warmBox();
+
+    this.log(`Cover "${this.getName()}" ready (box ${this._boxIp || 'warming up'})`);
+  }
+
+  async onDeleted() {
+    if (this._warmTimer) clearTimeout(this._warmTimer);
+  }
+
+  async _warmBox() {
+    if (this._boxIp || this._warming) return;
+    this._warming = true;
+    try {
+      const found = await discoverBox(this._instCode, WARM_MS);
+      if (found) {
+        this._boxIp = found.ip;
+        await this.setStoreValue('boxIp', found.ip).catch(this.error);
+      }
+    } catch (err) {
+      this.log(`box discovery failed: ${err.message}`);
+    }
+    this._warming = false;
+    if (!this._boxIp) {
+      this._warmTimer = setTimeout(() => {
+        this._warmTimer = null;
+        this._warmBox();
+      }, WARM_RETRY_MS);
+      if (this._warmTimer.unref) this._warmTimer.unref();
+    }
   }
 
   async _box() {
     if (this._boxIp) return this._boxIp;
-    const found = await discoverBox(this._instCode);
+    const found = await discoverBox(this._instCode, DISCOVER_MS);
     if (found) {
       this._boxIp = found.ip;
-      await this.setStoreValue('boxIp', found.ip);
+      await this.setStoreValue('boxIp', found.ip).catch(this.error);
     }
     return this._boxIp;
   }
@@ -83,7 +117,7 @@ class CoverDevice extends Homey.Device {
       await queueFor(this._instCode).run(async () => {
         for (let i = 0; i < repeats; i += 1) {
           if (i) await sleep(BURST_GAP_MS);
-          await sendLocal(ip, this._instCode, payload, 6000, false);
+          await sendLocal(ip, this._instCode, payload, 5000, false);
         }
       });
       return 'burst';
@@ -96,33 +130,19 @@ class CoverDevice extends Homey.Device {
     await this.setCapabilityValue('daisy_position', id).catch(this.error);
     await this.setCapabilityValue('windowcoverings_set', value).catch(this.error);
     await this.setCapabilityValue('windowcoverings_state', state).catch(this.error);
-  }
-
-  async _refreshFeedback(command) {
-    if (!this.getSetting('sync_feedback')) return;
-    const param = ((command && command.commandParam) || '').toUpperCase();
-    if (param === 'OPEN' || param === 'STOP' || param === 'CLOSE') return;
-    try {
-      await this._withBox((ip) => refreshFeedback(ip, this._instCode, this._device));
-    } catch (err) {
-      this.log(`feedback sync failed: ${err.message}`);
-    }
+    await this.setStoreValue('position', value).catch(this.error);
   }
 
   async _onPosition(id) {
     const value = parseInt(id, 10) / 100;
     const preset = coverPresetForValue(this._device, value);
-    const command = preset && preset.command;
-    await this._exec(command);
-    await this._refreshFeedback(command);
+    await this._exec(preset && preset.command);
     if (preset) await this._syncPosition(preset.value);
   }
 
   async _onSet(value) {
     const preset = coverPresetForValue(this._device, value);
-    const command = preset && preset.command;
-    await this._exec(command);
-    await this._refreshFeedback(command);
+    await this._exec(preset && preset.command);
     if (preset) await this._syncPosition(preset.value);
   }
 
@@ -133,7 +153,6 @@ class CoverDevice extends Homey.Device {
     else command = findCommand(this._device, 'OPEN_STOP_CLOSE', 'STOP');
 
     await this._exec(command);
-    await this._refreshFeedback(command);
 
     if (state === 'up') await this._syncPosition(1);
     else if (state === 'down') await this._syncPosition(0);

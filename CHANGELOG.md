@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0
+
+- Remove cloud status sync; state is tracked **purely locally** (cloud is only used
+  for device discovery during pairing)
+- Persist last known state on the device so it survives restarts
+- Fix Homey "timeout after 10000ms": box IP is now discovered at pairing and in the
+  background, and discovery/send timeouts are bounded well under 10 s
+- Faster command path (cached box IP)
+
 ## 1.2.0
 
 - Rename app to **Pergola Local** (`one.zyx.pergola-local`) to avoid trademarks in the app name
